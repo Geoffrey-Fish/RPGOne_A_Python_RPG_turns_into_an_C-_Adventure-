@@ -1,4 +1,6 @@
-﻿namespace RPGOne
+﻿using static System.Console;
+
+namespace RPGOne
     {
     /// <summary>
     /// Every RPG needs a map!
@@ -7,12 +9,18 @@
         {
         public string name { get; set; }
 
+
+        /// <summary>
+        /// Constructor for an extra map. Unsure if I need this
+        /// </summary>
+        /// <param name="name"></param>
         public Map(string name)
             {
             this.name = name;
             }
 
 
+        //todo: still wip
         /// <summary>
         /// Right now no idea what I wanted with that
         /// </summary>
@@ -22,6 +30,7 @@
             }
 
 
+        //todo: still wip
         /// <summary>
         /// Seems like i wanted to remap this with visited rooms marked
         /// OR maybe Player Position???
@@ -32,9 +41,8 @@
             {
             Dictionary<string,object> map = new Dictionary<string,object>();
             map.Add(key,value);
-            Console.WriteLine(map);
+            WriteLine(map);
             }
-
 
 
         /// <summary>
@@ -43,7 +51,7 @@
         public static void Plan()
             {
             Console.WriteLine("" +
-              "\n||||||||||||||||||\n" +
+                "||||||||||||||||||\n" +
                 "||||||none |||||||\n" +
                 "|none|orc  |none |\n" +
                 "|none|peon |store|\n" +

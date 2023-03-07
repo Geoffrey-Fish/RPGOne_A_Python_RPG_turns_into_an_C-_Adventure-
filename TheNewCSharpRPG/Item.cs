@@ -1,6 +1,8 @@
 ﻿using static System.Console;
+
 namespace RPGOne
     {
+
     /// <summary>
     /// Item Class contains all items in the game except Weapons and Armor
     /// </summary>
@@ -9,6 +11,8 @@ namespace RPGOne
         public string name { get; set; }
         public int gpValue { get; set; }
         public double weight { get; set; }
+
+
         /// <summary>
         /// Constructor for Items
         /// </summary>
@@ -21,6 +25,91 @@ namespace RPGOne
             this.gpValue = gpValue;
             this.weight = weight;
             }
+
+
+        /// <summary>
+        /// Method is called from the shop for buying stuff
+        /// </summary>
+        /// <param name="player">Players stats</param>
+        /// <param name="shop">Shops stats</param>
+        public static void Buy(Player player,Store shop)
+            {
+            WriteLine(player.name + " IS BUYING STUFF!" + Environment.NewLine);
+
+            for(int i = 0;i < shop.items.Count;i++)
+                {
+                WriteLine($"{i + 1}: {shop.items[i].name} FOR {shop.items[i].gpValue} GOLD");
+                }
+
+            WriteLine($"WHICH NUMBER DO YOU CHOOSE FROM 1 TO {shop.items.Count} ?");
+
+            var userInput = int.Parse(ReadLine());
+
+            try
+                {
+                if(player.gp >= shop.items[userInput].gpValue)
+                    {
+                    WriteLine($"BUYING {shop.items[userInput].name} !" + Environment.NewLine);
+
+                    player.gp -= shop.items[userInput].gpValue;
+                    player.items.Add(shop.items[userInput]);
+                    shop.items.RemoveAt(userInput);
+                    }
+                else
+                    {
+                    WriteLine("NOT ENOUGH COINS YOU HAVE!" + Environment.NewLine);
+                    }
+                }
+            catch(ArgumentOutOfRangeException)
+                {
+                WriteLine("NO ITEM HERE..." + Environment.NewLine);
+                }
+            }
+
+
+        /// <summary>
+        /// Method called from within Store for selling all the LOOT
+        /// </summary>
+        /// <param name="player">Player stats</param>
+        /// <param name="shop">Store stats</param>
+        public static void Sell(Player player,Store shop)
+            {
+            if(player.items.Count == 0)
+                {
+                WriteLine("YOUR BAG SEEMS EMPTY, MAN!");
+                return;
+                }
+            if(shop.gp == 0)
+                {
+                WriteLine("I'M BROKE, BUDDY, SORRY.");
+                return;
+                }
+            WriteLine(player.name + " IS SELLING:");
+
+            for(int i = 0;i < player.items.Count;i++)
+                {
+                //plus 1 because of the indexing
+                WriteLine($"{i + 1}: {player.items[i].name} WORTH {player.items[i].gpValue} GOLD.");
+                }
+
+            WriteLine($"WHAT YOU WANNA SELL FROM 1 TO {player.items.Count} ?");
+            //minus 1 because of the indexing
+            int userInput = int.Parse(player.UserInput()) - 1;
+            try
+                {
+                WriteLine($"SELLING {player.items[userInput].name} !");
+                WriteLine($"{player.name} GETS: {player.items[userInput].gpValue} GOLD.");
+                player.gp += player.items[userInput].gpValue;//todo: make a small cut for the clerk, like 0.7 times. need double,though...
+                shop.items.Add(player.items[userInput]);
+                player.items.RemoveAt(userInput);
+                }
+            catch(ArgumentOutOfRangeException)
+                {
+                WriteLine("NO ITEM HERE...");
+                }
+            }
+
+
         /// <summary>
         /// Status of current Item
         /// </summary>
@@ -30,22 +119,26 @@ namespace RPGOne
             WriteLine("GP VALUE: " + gpValue.ToString());
             WriteLine("WEIGHT: " + weight.ToString());
             }
+
+        //// Example usage
+        //short_sword.Status();
+        //        wizards_staff.Status();
+        //        stick.Status();
+        //        leather_armor.Status();
+        //        cloth_robe.Status();
+        //        towel.Status();
+        //        gem.Status();
+        //        poison.Status();
+        //        minor_health.Status();
+
+
         /// <summary>
         /// Invocation of Items
         /// </summary>
         public static Item gem = new Item("GEM",100,0.1);
         public static Item poison = new Item("POISON",40,1);
         public static Item minor_health = new Item("MINOR_HEALTH",150,1);
+
+        ///////
         }
     }
-//// Example usage
-//short_sword.Status();
-//        wizards_staff.Status();
-//        stick.Status();
-//        leather_armor.Status();
-//        cloth_robe.Status();
-//        towel.Status();
-//        gem.Status();
-//        poison.Status();
-//        minor_health.Status();
-

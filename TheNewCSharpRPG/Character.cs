@@ -2,6 +2,9 @@
 
 namespace RPGOne
     {
+    /// <summary>
+    /// These are the values a npc has.
+    /// </summary>
     public class Character
         {
         public bool friend { get; set; }
@@ -21,6 +24,23 @@ namespace RPGOne
         public int ar { get; set; }
         public string dialog { get; set; }
 
+
+        /// <summary>
+        /// This is the NPC Constructor, for Friends and foes alltogether
+        /// </summary>
+        /// <param name="friend">Friend or Foe?</param>
+        /// <param name="name">The Name</param>
+        /// <param name="pos_x">Where npc is at x</param>
+        /// <param name="pos_y">Where npc is at y</param>
+        /// <param name="hp">Npc health</param>
+        /// <param name="st">Npc strength</param>
+        /// <param name="dex">Npc dexterity</param>
+        /// <param name="gp">Npc precious GOLD</param>
+        /// <param name="xp">Npc Expierience</param>
+        /// <param name="items">Npcs stuff</param>
+        /// <param name="weapons">Npcs Weapons</param>
+        /// <param name="armors">Npcs Armor</param>
+        /// <param name="dialog">What the buddy has to say.</param>
         public Character(bool friend,string name,int pos_x,int pos_y,int hp,int st,int dex,int gp,int xp,List<Item> items,List<Weapon> weapons,List<Armor> armors,string dialog)
             {
             this.friend = friend;
@@ -40,6 +60,10 @@ namespace RPGOne
             this.dialog = dialog;
             }
 
+
+        /// <summary>
+        /// Gives the actual Status of the Npc
+        /// </summary>
         public void Status()
             {
             WriteLine(this.name);
@@ -66,10 +90,17 @@ namespace RPGOne
             foreach(Armor armor in this.armors)
                 {
                 WriteLine("ARMORS: ");
-                WriteLine(armor.Name);
+                WriteLine(armor.name);
                 }
             }
 
+
+        /// <summary>
+        /// Random Dice roll for the battles
+        /// </summary>
+        /// <param name="min">minimum value</param>
+        /// <param name="max">maximum value - 1</param>
+        /// <returns>Random Number in Range of min and max</returns>
         public int RollDice(int min,int max)
             {
             int roll = new Random().Next(min,max);
@@ -77,11 +108,20 @@ namespace RPGOne
             return roll;
             }
 
+
+        /// <summary>
+        /// That's what the Npc can say
+        /// </summary>
         public void Dialog()
             {
             WriteLine(this.dialog);
             }
 
+
+        /// <summary>
+        /// This is a relic from Python. It clears the enemy Npc from the Room
+        /// </summary>
+        /// <param name="room">Rooms Npcs</param>
         public void QueueFree(Room room)
             {
             WriteLine(this.name + " IS DEAD.");
@@ -101,6 +141,11 @@ namespace RPGOne
                 room.armors.Add(armor);
                 }
             }
+
+
+        /// <summary>
+        /// Invocation of all Characters
+        /// </summary>
         //Foes
         //bool friend, string name,int pos_x,int pos_y,int max_hp,int st,int dex,int gp,int xp,List<Item> items,List<Weapon> weapons,List<Armor> armors,string dialog
         public static Character orc_peon = new Character(false,"ORC PEON",0,6,30,60,50,20,10,new List<Item> { Item.gem },new List<Weapon> { Weapon.short_sword },new List<Armor> { Armor.leather_armor },"DIE DIE DIE BART, DIE!!!");
@@ -112,5 +157,6 @@ namespace RPGOne
         public static Character rat_man = new Character(true,"RAT MAN",1,2,5,10,20,2,5,new List<Item> { Item.poison },new List<Weapon> { Weapon.stick },new List<Armor> { Armor.towel },"RAT TITTIES,FRESH RAT TITTIES!!!");
         public static Character store_clerk = new Character(true,"STORE CLERK",1,0,2,3,4,5,5,new List<Item> { Item.gem,Item.minor_health },new List<Weapon> { Weapon.stick },new List<Armor> { Armor.towel },"Hi THERE, STRANGER");
 
+        /////
         }
     }

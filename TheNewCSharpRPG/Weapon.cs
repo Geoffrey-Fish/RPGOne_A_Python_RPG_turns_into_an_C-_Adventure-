@@ -1,4 +1,6 @@
-﻿namespace RPGOne
+﻿using static System.Console;
+
+namespace RPGOne
     {
     /// <summary>
     /// Class for the weapons in the game
@@ -10,11 +12,23 @@
         public int arValue { get; set; }
         public int gpValue { get; set; }
         public double weight { get; set; }
+
+
+        //todo: still not in use
         /// <summary>
         /// Randomizer for new and different weapons on every game
         /// </summary>
         private static Random rand = new Random();
 
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="dmgValue"></param>
+        /// <param name="arValue"></param>
+        /// <param name="gpValue"></param>
+        /// <param name="weight"></param>
         public Weapon(string name,int dmgValue,int arValue,int gpValue,double weight)
             {
             this.name = name;
@@ -23,17 +37,104 @@
             this.gpValue = gpValue;
             this.weight = weight;
             }
+
+
+        /// <summary>
+        /// Method is called from the shop for buying stuff
+        /// </summary>
+        /// <param name="player">Players stats</param>
+        /// <param name="shop">Shops stats</param>
+        public static void Buy(Player player,Store shop)
+            {
+            WriteLine(player.name + " IS BUYING SOME WEAPONS!" + Environment.NewLine);
+
+            for(int i = 0;i < shop.weapons.Count;i++)
+                {
+                //Plus one because of indexing
+                WriteLine($"{i + 1}: {shop.weapons[i].name} FOR {shop.weapons[i].gpValue} GOLD");
+                }
+
+            WriteLine($"WHICH NUMBER DO YOU CHOOSE FROM 1 TO {shop.weapons.Count} ?");
+            //Minus one because of indexing
+            var userInput = int.Parse(ReadLine()) - 1;
+
+            try
+                {
+                if(player.gp >= shop.weapons[userInput].gpValue)
+                    {
+                    WriteLine($"BUYING {shop.weapons[userInput].name} !" + Environment.NewLine);
+
+                    player.gp -= shop.weapons[userInput].gpValue;
+                    player.weapons.Add(shop.weapons[userInput]);
+                    shop.weapons.RemoveAt(userInput);
+                    }
+                else
+                    {
+                    WriteLine("NOT ENOUGH COINS YOU HAVE!" + Environment.NewLine);
+                    }
+                }
+            catch(ArgumentOutOfRangeException)
+                {
+                WriteLine("NO ITEM HERE..." + Environment.NewLine);
+                }
+            }
+
+
+        /// <summary>
+        /// Method called from within Store for selling all the LOOT
+        /// </summary>
+        /// <param name="player">Player stats</param>
+        /// <param name="shop">Store stats</param>
+        public static void Sell(Player player,Store shop)
+            {
+            if(player.weapons.Count == 0)
+                {
+                WriteLine("YOUR BAG SEEMS EMPTY, MAN!");
+                return;
+                }
+            if(shop.gp == 0)
+                {
+                WriteLine("I'M BROKE, BUDDY, SORRY.");
+                return;
+                }
+            WriteLine(player.name + " IS SELLING:");
+
+            for(int i = 0;i < player.weapons.Count;i++)
+                {
+                //plus 1 because of the indexing
+                WriteLine($"{i + 1}: {player.weapons[i].name} WORTH {player.weapons[i].gpValue} GOLD");
+                }
+
+            WriteLine($"WHAT YOU WANNA SELL FROM 1 TO {player.weapons.Count} ?");
+            //minus 1 because of the indexing
+            int userInput = int.Parse(player.UserInput()) - 1;
+            try
+                {
+                WriteLine($"SELLING {player.weapons[userInput].name}");
+                WriteLine($"{player.name} GETS: {player.weapons[userInput].gpValue} GOLD");
+                player.gp += player.weapons[userInput].gpValue;//todo: make a small cut for the clerk, like 0.7 times. need double,though...
+                shop.weapons.Add(player.weapons[userInput]);
+                player.weapons.RemoveAt(userInput);
+                }
+            catch(ArgumentOutOfRangeException)
+                {
+                WriteLine("NO ITEM HERE...");
+                }
+            }
+
+
         /// <summary>
         /// Status of current selected Weapon
         /// </summary>
         public void Status()
             {
-            Console.WriteLine(name);
-            Console.WriteLine("DMG VALUE: " + dmgValue.ToString());
-            Console.WriteLine("AR VALUE: " + arValue.ToString());
-            Console.WriteLine("GP VALUE: " + gpValue.ToString());
-            Console.WriteLine("WEIGHT: " + weight.ToString());
+            WriteLine(name);
+            WriteLine("DMG VALUE: " + dmgValue.ToString());
+            WriteLine("AR VALUE: " + arValue.ToString());
+            WriteLine("GP VALUE: " + gpValue.ToString());
+            WriteLine("WEIGHT: " + weight.ToString());
             }
+
 
         /// <summary>
         /// Invocation of weapons
@@ -42,5 +143,6 @@
         public static Weapon wizards_staff = new Weapon("WIZARDS STAFF",rand.Next(1,41),0,400,4);
         public static Weapon stick = new Weapon("STICK",1,0,1,0.1);
 
+        /////
         }
     }

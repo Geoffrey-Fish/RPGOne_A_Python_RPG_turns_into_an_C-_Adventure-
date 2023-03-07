@@ -1,11 +1,21 @@
 ﻿namespace RPGOne
     {
+
+    /// <summary>
+    /// No game without some fights!
+    /// </summary>
     public class Battles
         {
+        /// <summary>
+        /// Call a Fight, get a fight, till only one survives
+        /// </summary>
+        /// <param name="attacker">Npcs stats</param>
+        /// <param name="defender">Players stats</param>
         public static void Battle(Character attacker,Player defender)
             {
             Initiative(attacker,defender);
 
+            ///Who is first
             void Initiative(Character att,Player def)
                 {
                 // INITIATIVE PHASE
@@ -23,6 +33,8 @@
                     }
                 }
 
+
+            ///Npc attacks
             void FoeAttack(Character attacker,Player defender)
                 {
                 Console.WriteLine($"{attacker.name} IS ATTACKING {defender.name}");
@@ -39,6 +51,8 @@
                     }
                 }
 
+
+            /// Player attacks
             void HeroAttack(Player attacker,Character defender)
                 {
                 Console.WriteLine($"{attacker.name} IS ATTACKING {defender.name}");

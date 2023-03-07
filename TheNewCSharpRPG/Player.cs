@@ -170,12 +170,14 @@ namespace RPGOne
             return roll;
             }
 
+        //todo: weapon and armor choose for active weapon
 
         /// <summary>
-        /// To look at the inventory whenever chosen
+        /// To look at the inventory and interact with its contents
+        /// todo: the weight might play here also!
         /// </summary>
         /// <param name="room"> the room the player is at</param>
-        public void Inventory(Room room)
+        public void Inventory(Room room,Player player)
             {
             WriteLine("INVENTORY OPTIONS:\n| (P)ICK UP\n| (D)ROP\n| (B)ACK");
             string user_input = ReadLine().ToUpper();
@@ -183,14 +185,13 @@ namespace RPGOne
                 {
                 WriteLine("LOOK AT THE ITEMS HERE:");
                 Thread.Sleep(1000);
-                PickUp(room.items,this.items);
-                pickChangerItem(room.items,this.items);
+                PickUpItems(room,room.items,items);
                 WriteLine("WHAT ABOUT THESE WEAPONS?");
                 Thread.Sleep(1000);
-                PickUp(room.weapons,this.weapons);
+                PickUpWeapons(room,room.weapons,weapons);
                 WriteLine("SOME ARMOR, MAYBE?");
                 Thread.Sleep(1000);
-                PickUp(room.armors,this.armors);
+                PickUpArmors(room,room.armors,armors);
                 }
             else if(user_input == "D")
                 {
@@ -202,26 +203,15 @@ namespace RPGOne
                 return;
                 }
             }
-        public static List pickChangerItem(List<T> room,List<T> player)
-            {
-            List<T> roomi = new List<T> { };
-            List<T> playeri = new List<T> { };
-            for(int j = 0;j < roomi.Length;j++)
-                {
-                roomi.Add(room[j]);
-                }
-            for(int i = 0;i < player.Length;i++)
-                {
-                playeri.Add(player[i]);
-                }
-            }
 
 
-
-
-
-        //todo: Big Problem to be solved regarding different List types
-        void PickUp(List<T> roomObjList,List<T> playerObjList)
+        /// <summary>
+        /// Pick valuable Items from the Floor
+        /// </summary>
+        /// <param name="room">The Room you are at</param>
+        /// <param name="roomObjList">The items in the room</param>
+        /// <param name="playerObjList">Players bag</param>
+        void PickUpItems(Room room,List<Item> roomObjList,List<Item> playerObjList)
             {
             if(roomObjList.Count > 0)
                 {
@@ -242,7 +232,7 @@ namespace RPGOne
                         }
                     else if(userInput == "B")
                         {
-                        // pass or return or options call?
+                        return;
                         }
                     }
                 }
@@ -256,17 +246,116 @@ namespace RPGOne
                     }
                 else if(userInput == "N")
                     {
-                    // pass
+                    return;
                     }
                 }
             }
 
+
+        /// <summary>
+        /// Pick valuable Weapons from the Floor
+        /// </summary>
+        /// <param name="room">The Room you are at</param>
+        /// <param name="roomObjList">The weapons in the room</param>
+        /// <param name="playerObjList">Players bag</param>
+        void PickUpWeapons(Room room,List<Weapon> roomObjList,List<Weapon> playerObjList)
+            {
+            if(roomObjList.Count > 0)
+                {
+                foreach(Weapon obj in roomObjList)
+                    {
+                    WriteLine(obj.name);
+                    WriteLine("(P)ICK UP?\n| (N)EXT?\n| (B)ACK?");
+                    string userInput = UserInput();
+                    if(userInput == "P")
+                        {
+                        WriteLine(name + " PICKS UP " + obj.name);
+                        roomObjList.Remove(obj);
+                        playerObjList.Add(obj);
+                        }
+                    else if(userInput == "N")
+                        {
+                        continue;
+                        }
+                    else if(userInput == "B")
+                        {
+                        return;
+                        }
+                    }
+                }
+            else
+                {
+                WriteLine("THERE IS NOTHING!WANNA DROP INSTEAD?\n| (Y)ES\n| (N)O");
+                string userInput = UserInput();
+                if(userInput == "Y")
+                    {
+                    Drop(room);
+                    }
+                else if(userInput == "N")
+                    {
+                    return;
+                    }
+                }
+            }
+
+
+        /// <summary>
+        /// Pick valuable Armor from the Floor
+        /// </summary>
+        /// <param name="room">The Room you are at</param>
+        /// <param name="roomObjList">The Armor in the room</param>
+        /// <param name="playerObjList">Players bag</param>
+        void PickUpArmors(Room room,List<Armor> roomObjList,List<Armor> playerObjList)
+            {
+            if(roomObjList.Count > 0)
+                {
+                foreach(Armor obj in roomObjList)
+                    {
+                    WriteLine(obj.name);
+                    WriteLine("(P)ICK UP?\n| (N)EXT?\n| (B)ACK?");
+                    string userInput = UserInput();
+                    if(userInput == "P")
+                        {
+                        WriteLine(name + " PICKS UP " + obj.name);
+                        roomObjList.Remove(obj);
+                        playerObjList.Add(obj);
+                        }
+                    else if(userInput == "N")
+                        {
+                        continue;
+                        }
+                    else if(userInput == "B")
+                        {
+                        return;
+                        }
+                    }
+                }
+            else
+                {
+                WriteLine("THERE IS NOTHING!WANNA DROP INSTEAD?\n| (Y)ES\n| (N)O");
+                string userInput = UserInput();
+                if(userInput == "Y")
+                    {
+                    Drop(room);
+                    }
+                else if(userInput == "N")
+                    {
+                    return;
+                    }
+                }
+            }
+
+
+        /// <summary>
+        /// Drop Function for throwing stuff away- wait till the player sees how much money he could make at the store...hehehe...
+        /// </summary>
+        /// <param name="room">The room to be littered</param>
         void Drop(Room room)
             {
             if(items.Count == 0 && weapons.Count == 0 && armors.Count == 0)
                 {
                 WriteLine("OH BOY,HOW DID YOU GET NEKKID???CYA...");
-                Grid(player);
+                Program.Grid(this);
                 }
             WriteLine("DROP:\n| (I)TEM ? \n| (W)EAPON ?\n| (A)RMOR ?");
             string userInput = UserInput();
@@ -275,7 +364,7 @@ namespace RPGOne
                 WriteLine("DROPPING ITEM");
                 foreach(Item item in items)
                     {
-                    WriteLine("DROPPING " + item.Name);
+                    WriteLine("DROPPING " + item.name);
                     WriteLine("You sure?\n| (Y)ES\n| OR (N)O");
                     string input = UserInput();
                     if(input == "Y")
@@ -299,7 +388,7 @@ namespace RPGOne
                 WriteLine("DROPPING WEAPON");
                 foreach(Weapon weapon in weapons)
                     {
-                    WriteLine("DROPPING " + weapon.Name);
+                    WriteLine("DROPPING " + weapon.name);
                     WriteLine("You sure?\n| (Y)ES\n| OR (N)O");
                     string input = UserInput();
                     if(input == "Y")
@@ -323,7 +412,7 @@ namespace RPGOne
                 WriteLine("DROPPING ARMOR");
                 foreach(Armor armor in armors)
                     {
-                    WriteLine("DROPPING " + armor.Name);
+                    WriteLine("DROPPING " + armor.name);
                     WriteLine("You sure?\n| (Y)ES\n| OR (N)O");
                     string input = UserInput();
                     if(input == "Y")
@@ -347,9 +436,7 @@ namespace RPGOne
                 Drop(room);
                 }
             }
-        }
 
-    internal class T
-        {
+        /////
         }
     }
