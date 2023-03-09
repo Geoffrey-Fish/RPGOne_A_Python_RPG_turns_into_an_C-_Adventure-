@@ -1,4 +1,7 @@
-﻿namespace RPGOne
+﻿///THIS IS STILL WORK IN PROGRESS!!!!!
+//TODO: WIP
+
+namespace RPGOne
     {
     internal class Quest
         {

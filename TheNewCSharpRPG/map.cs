@@ -2,21 +2,50 @@
 
 namespace RPGOne
     {
+
     /// <summary>
     /// Every RPG needs a map!
     /// </summary>
     public class Map
+
         {
-        public string name { get; set; }
+        /// <summary>
+        /// The Map as jagged array,
+        /// One hidden, one uncovered.
+        /// </summary>
+        public static string[][] mapHidden ={
+                new string[] { "||||||", "||||||", "||||||" }, //[0][0],[0][1],[0][2]
+                new string[] { "||||||", "???? |", "||||||" }, //[1][0],[1][1],[1][2]
+                new string[] { "|????|", "???? |", "???? |" }, //[2][0],[2][1],[2][2]
+                new string[] { "|????|", "???? |", "???? |" }, //[3][0],[3][1],[3][2]
+                new string[] { "|????|", "START|", "???? |" }, //[4][0],[4][1],[4][2]
+                new string[] { "|????|", "???? |", "???? |" }, //[5][0],[5][1],[5][2]
+                new string[] { "||||||", "???? |", "||||||" }, //[6][0],[6][1],[6][2]
+                new string[] { "||||||", "||||||", "||||||" }  //[7][0],[7][1],[7][2]
+                };
+        public static string[][] mapUncovered ={
+                new string[] { "||||||", "||||||", "||||||" }, //[0][0],[0][1],[0][2]
+                new string[] { "||||||", "NULL |", "||||||" }, //[1][0],[1][1],[1][2]
+                new string[] { "|NULL|", "ORCS |", "NULL |" }, //[2][0],[2][1],[2][2]
+                new string[] { "|NULL|", "FOES |", "STORE|" }, //[3][0],[3][1],[3][2]
+                new string[] { "|NULL|", "START|", "RATS |" }, //[4][0],[4][1],[4][2]
+                new string[] { "|NULL|", "GEMS |", "NULL |" }, //[5][0],[5][1],[5][2]
+                new string[] { "||||||", "NULL |", "||||||" }, //[6][0],[6][1],[6][2]
+                new string[] { "||||||", "||||||", "||||||" }  //[7][0],[7][1],[7][2]
+                };
 
 
         /// <summary>
-        /// Constructor for an extra map. Unsure if I need this
+        /// Simple printout of the map.
         /// </summary>
-        /// <param name="name"></param>
-        public Map(string name)
+        public static void Plan(Room room,Player player)
             {
-            this.name = name;
+            Clear();
+            for(int i = 0;i < 8;i++)
+                {
+                WriteLine(mapHidden[i][0] + mapHidden[i][1] + mapHidden[i][2]);
+                }
+            Program.Options(room,player);
             }
 
 
@@ -24,42 +53,12 @@ namespace RPGOne
         /// <summary>
         /// Right now no idea what I wanted with that
         /// </summary>
-        public void Path()
+        public static void Path(int x,int y)
             {
-            //like a way pointer #TODO
+            mapHidden[x][y] = mapUncovered[x][y];
             }
 
 
-        //todo: still wip
-        /// <summary>
-        /// Seems like i wanted to remap this with visited rooms marked
-        /// OR maybe Player Position???
-        /// </summary>
-        /// <param name="key"> like, "visited" ?</param>
-        /// <param name="value"> the room coordinates?</param>
-        public void MapAdd(string key,object value)
-            {
-            Dictionary<string,object> map = new Dictionary<string,object>();
-            map.Add(key,value);
-            WriteLine(map);
-            }
 
-
-        /// <summary>
-        /// Simple printout of the map.
-        /// </summary>
-        public static void Plan()
-            {
-            Console.WriteLine("" +
-                "||||||||||||||||||\n" +
-                "||||||none |||||||\n" +
-                "|none|orc  |none |\n" +
-                "|none|peon |store|\n" +
-                "|none|start|rat  |\n" +
-                "|none|gem  |none |\n" +
-                "||||||none |||||||\n" +
-                "||||||||||||||||||");
-            //should learn how to make a cli table for proper show of that map
-            }
         }
     }

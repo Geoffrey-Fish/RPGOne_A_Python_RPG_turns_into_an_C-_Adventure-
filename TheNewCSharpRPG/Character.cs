@@ -55,7 +55,7 @@ namespace RPGOne
             this.items = items;
             this.weapons = weapons;
             this.armors = armors;
-            this.dmg = weapons[0].dmgValue;
+            this.dmg = weapons[0].dmgValue; //gets calculated while fighting
             this.ar = armors[0].arValue;
             this.dialog = dialog;
             }
@@ -66,28 +66,30 @@ namespace RPGOne
         /// </summary>
         public void Status()
             {
-            WriteLine(this.name);
-            WriteLine(this.name + " POS X: " + this.pos_x);
-            WriteLine(this.name + " POS Y: " + this.pos_y);
-            WriteLine("HP: " + this.hp);
-            WriteLine("STR: " + this.st);
-            WriteLine("DEX: " + this.dex);
-            WriteLine("DMG: " + this.dmg);
-            WriteLine("AR: " + this.ar);
-            WriteLine("GP: " + this.gp);
-            WriteLine("XP: " + this.xp);
+            Clear();
+            WriteLine("---NPC-POSITION---------");
+            WriteLine(name + "`S POS X: " + pos_x);
+            WriteLine(name + "`S POS Y: " + pos_y);
+            WriteLine("---NPC-STATS------------");
+            WriteLine($"HEALTH: {hp} OF: {max_hp}");
+            WriteLine("STRENGTH: " + st);
+            WriteLine("DEXTERITY: " + dex);
+            WriteLine("DAMAGE: " + dmg);
+            WriteLine("DEFENCE: " + ar);
+            WriteLine("EXPIERIENCE: " + xp);
+            WriteLine("GOLD: " + gp);
 
-            foreach(Item item in this.items)
+            foreach(Item item in items)
                 {
                 WriteLine("ITEMS: ");
                 WriteLine(item.name);
                 }
-            foreach(Weapon weapon in this.weapons)
+            foreach(Weapon weapon in weapons)
                 {
                 WriteLine("WEAPONS: ");
                 WriteLine(weapon.name);
                 }
-            foreach(Armor armor in this.armors)
+            foreach(Armor armor in armors)
                 {
                 WriteLine("ARMORS: ");
                 WriteLine(armor.name);
@@ -104,7 +106,7 @@ namespace RPGOne
         public int RollDice(int min,int max)
             {
             int roll = new Random().Next(min,max);
-            WriteLine(this.name + " ROLLS: " + roll);
+            WriteLine(name + " ROLLS: " + roll);
             return roll;
             }
 
@@ -114,32 +116,84 @@ namespace RPGOne
         /// </summary>
         public void Dialog()
             {
-            WriteLine(this.dialog);
+            WriteLine(dialog);
             }
 
 
         /// <summary>
-        /// This is a relic from Python. It clears the enemy Npc from the Room
-        /// </summary>
+        ///It clears the enemy Npc from the Room
+        ///</summary>
         /// <param name="room">Rooms Npcs</param>
         public void QueueFree(Room room)
             {
-            WriteLine(this.name + " IS DEAD.");
-            foreach(Item item in this.items)
+            Narrative.EnemyDeath();
+            WriteLine(name + " IS DEAD.\n" +
+                "WELL DONE!\n" +
+                "THE BODY DROPS HIS LOOT TO THE GROUND.");
+            //Now looping through items, weapons and armor
+            //if zero,skip
+            if(items.Count > 0)
                 {
-                this.items.Remove(item);
-                room.items.Add(item);
+                //if more than one, iterate
+                if(items.Count > 1)
+                    {
+                    foreach(Item item in items)
+                        {
+                        Item iChanger = item;
+                        items.Remove(item);
+                        room.items.Add(iChanger);
+                        }
+                    }
+                //if only one, this one
+                else if(items.Count == 1)
+                    {
+                    Item iChanger = items[0];
+                    items.RemoveAt(0);
+                    room.items.Add(iChanger);
+                    }
                 }
-            foreach(Weapon weapon in this.weapons)
+            //same procedure as items
+            if(weapons.Count > 0)
                 {
-                this.weapons.Remove(weapon);
-                room.weapons.Add(weapon);
+                if(weapons.Count > 1)
+                    {
+                    foreach(Weapon weapon in weapons)
+                        {
+                        Weapon wChanger = weapon;
+                        weapons.Remove(weapon);
+                        room.weapons.Add(wChanger);
+                        }
+                    }
+                else if(weapons.Count == 1)
+                    {
+                    Weapon wChanger = weapons[0];
+                    weapons.RemoveAt(0);
+                    room.weapons.Add(wChanger);
+                    }
                 }
-            foreach(Armor armor in this.armors)
+            //same procedure as items
+            if(armors.Count > 0)
                 {
-                this.armors.Remove(armor);
-                room.armors.Add(armor);
+                if(armors.Count > 1)
+                    {
+                    foreach(Armor armor in armors)
+                        {
+                        Armor aChanger = armor;
+                        armors.Remove(armor);
+                        room.armors.Add(aChanger);
+                        }
+                    }
+                else if(armors.Count == 1)
+                    {
+                    Armor aChanger = armors[0];
+                    armors.RemoveAt(0);
+                    room.armors.Add(aChanger);
+                    }
                 }
+            WriteLine("IF YOU WANT TO LOOT,CHOOSE (I)NVENTORY IN THE MENU.\n" +
+                "CONTINUE WITH ANY KEY:");
+            Write("==>");
+            ReadKey();
             }
 
 
@@ -148,13 +202,13 @@ namespace RPGOne
         /// </summary>
         //Foes
         //bool friend, string name,int pos_x,int pos_y,int max_hp,int st,int dex,int gp,int xp,List<Item> items,List<Weapon> weapons,List<Armor> armors,string dialog
-        public static Character orc_peon = new Character(false,"ORC PEON",0,6,30,60,50,20,10,new List<Item> { Item.gem },new List<Weapon> { Weapon.short_sword },new List<Armor> { Armor.leather_armor },"DIE DIE DIE BART, DIE!!!");
-        public static Character orc_peewee = new Character(false,"ORC PEEWEE",0,6,30,60,50,20,10,new List<Item> { Item.gem },new List<Weapon> { Weapon.short_sword },new List<Armor> { Armor.leather_armor },"DIEDABADUU!!!");
+        public static Character orc_peon = new Character(false,"ORC PIGGY",0,6,18,30,20,20,10,new List<Item> { Item.gem },new List<Weapon> { Weapon.short_sword },new List<Armor> { Armor.leather_armor },"DIE DIE DIE BART, DIE!!!");
+        public static Character orc_peewee = new Character(false,"ORC PEEWEE",0,6,25,30,30,20,10,new List<Item> { Item.gem },new List<Weapon> { Weapon.short_sword },new List<Armor> { Armor.leather_armor },"DIEDABADUU!!!");
         public static Character orc_boner = new Character(false,"ORC BONER",0,6,30,60,50,20,10,new List<Item> { Item.gem },new List<Weapon> { Weapon.short_sword },new List<Armor> { Armor.leather_armor },"DER BART, DER!!!");
         public static Character orc_baba = new Character(false,"ORC BABA",0,6,30,60,50,20,10,new List<Item> { Item.gem },new List<Weapon> { Weapon.short_sword },new List<Armor> { Armor.leather_armor },"LOREM IPSUM!!!");
         //Friends
-        public static Character friendly_wizard = new Character(true,"FRIENDLY WIZARD",0,6,30,60,50,20,10,new List<Item> { Item.gem },new List<Weapon> { Weapon.wizards_staff },new List<Armor> { Armor.cloth_robe },"HELLO ADVENTURER I AM A FRIENDLY WIZARD.I HAVE BROUGHT YOU TO THIS REALITY!");
-        public static Character rat_man = new Character(true,"RAT MAN",1,2,5,10,20,2,5,new List<Item> { Item.poison },new List<Weapon> { Weapon.stick },new List<Armor> { Armor.towel },"RAT TITTIES,FRESH RAT TITTIES!!!");
+        public static Character friendly_wizard = new Character(true,"FRIENDLY WIZARD",0,6,30,60,50,20,10,new List<Item> { Item.gem },new List<Weapon> { Weapon.wizards_staff },new List<Armor> { Armor.cloth_robe },"HELLO ADVENTURER!\n I AM A FRIENDLY WIZARD.\nI HAVE BROUGHT YOU TO THIS REALITY!\nI HEARD STRANGE SOUNDS COMING FROM THE NORTH!!!!");
+        public static Character rat_man = new Character(true,"RAT MAN",1,2,5,10,20,2,5,new List<Item> { Item.poison },new List<Weapon> { Weapon.stick },new List<Armor> { Armor.towel },"RAT TITTIES,FRESH RAT TITTIES,I HAVE THEM ALL!!!\nJUST 49999 GOLD,EACH!!!\nBETTER THAN WHAT THAT SHOP UP NORTH HAS TO OFFER,FOR SURE!!!!\n*garbles along in his beard...*");
         public static Character store_clerk = new Character(true,"STORE CLERK",1,0,2,3,4,5,5,new List<Item> { Item.gem,Item.minor_health },new List<Weapon> { Weapon.stick },new List<Armor> { Armor.towel },"Hi THERE, STRANGER");
 
         /////

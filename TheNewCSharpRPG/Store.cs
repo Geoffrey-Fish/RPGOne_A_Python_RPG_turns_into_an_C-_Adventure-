@@ -34,11 +34,13 @@ namespace RPGOne
         public static Store shop = new Store("CRAMERS CANDIES","ALL THE STUFF YOU NEED",1,1,new List<Character>
             { Character.store_clerk },new List<Item> { Item.gem,Item.minor_health,Item.poison },new List<Weapon>
                 { Weapon.short_sword,Weapon.wizards_staff,Weapon.stick },new List<Armor>
-                    { Armor.leather_armor,Armor.towel,Armor.cloth_robe },999);
+                    { Armor.leather_armor,Armor.towel,Armor.cloth_robe },599);
 
         public static void status(Player player)
             {
+            Clear();
             WriteLine("WELCOME TO THE CANDY SHOP");
+            WriteLine("-------------------------");
             Menu(player,Store.shop);
             }
 
@@ -49,16 +51,20 @@ namespace RPGOne
         /// <param name="shop">shop stats</param>
         public static void Menu(Player player,Store shop)
             {
-            WriteLine("STORE MENU");
-            WriteLine("(B)UY | (S)ELL | (L)EAVE");
-            string user_input = player.UserInput();
+            WriteLine("STORE MENU:");
+            WriteLine("|(B)UY\n|(S)ELL\n|(L)EAVE");
+            Write("==>");
+            string[] choice = new string[] { "B","S","L" };
+            string user_input = player.UserInput(choice);
 
             if(user_input == "B")
                 {
                 //Here was my main battlefield because of the Lists and their uniqueness when paired to a class.
                 //So I exported Buy and Sell to the coressponding Classes, it makes calling the buy/sell method easy and concise.
                 WriteLine("(I)TEMS,(W)EAPONS,(A)RMOR?");
-                string user_input2 = player.UserInput();
+                Write("==>");
+                string[] choice2 = new string[] { "I","W","A" };
+                string user_input2 = player.UserInput(choice2);
                 switch(user_input2)
                     {
                     case "I":
@@ -78,12 +84,14 @@ namespace RPGOne
                 }
             else if(user_input == "S")
                 {
-                WriteLine("(I)TEMS,(W)EAPONS,(A)RMOR?");
-                string user_input2 = player.UserInput();
+                WriteLine("|(I)TEMS\n|(W)EAPONS\n|(A)RMOR?");
+                Write("==>");
+                string[] choice3 = new string[] { "I","W","A" };
+                string user_input2 = player.UserInput(choice3);
                 switch(user_input2)
                     {
                     case "I":
-                        //It works!!!!It finally fucking works!!!!!
+                        //It works!!!!It finally f*****g works!!!!!
                         Item.Sell(player,shop);
                         break;
                     case "W":
@@ -94,6 +102,7 @@ namespace RPGOne
                         break;
                     default:
                         WriteLine("WRONG INPUT,CAVEMAN!");
+                        Menu(player,shop);
                         break;
                     }
                 }
@@ -101,6 +110,7 @@ namespace RPGOne
                 {
                 //Back to main menu
                 WriteLine("SEE YOU! COME BACK SOMETIME!");
+                //Program.Options(room,player);
                 return;
                 }
             else
